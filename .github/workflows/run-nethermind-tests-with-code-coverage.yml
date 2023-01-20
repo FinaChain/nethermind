@@ -118,7 +118,7 @@ jobs:
     #- name: Nethermind.Wallet.Test
     #  run: dotnet test -c ${{ env.BUILD_CONFIG }} $EXCLUDE_TEST_PROJECTS src/Nethermind/Nethermind.Wallet.Test
     - name: Cache Nethermind tests report
-      uses: actions/cache@v3
+      uses: actions/cache/save@v3
       with:
         path: |
           src/Nethermind/Nethermind.*/coverage.opencover.xml
@@ -169,7 +169,7 @@ jobs:
     #- name: Ethereum.VM.Test
     #  run: dotnet test -c ${{ env.BUILD_CONFIG }} $EXCLUDE_TEST_PROJECTS src/Nethermind/Ethereum.VM.Test
     - name: Cache Ethereum tests report
-      uses: actions/cache@v3
+      uses: actions/cache/save@v3
       with:
         path: |
           src/Nethermind/Ethereum.*/coverage.opencover.xml
@@ -181,7 +181,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Restore reports from cache
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: |
             src/Nethermind/Ethereum.*/coverage.opencover.xml
