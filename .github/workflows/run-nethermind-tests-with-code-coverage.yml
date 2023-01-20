@@ -183,9 +183,6 @@ jobs:
       - name: Restore reports from cache
         uses: actions/cache/restore@v3
         with:
-          path: |
-            src/Nethermind/Ethereum.*/coverage.opencover.xml
-            src/Nethermind/Nethermind.*/coverage.opencover.xml
           key: codecov-${{ github.sha }}
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v1
