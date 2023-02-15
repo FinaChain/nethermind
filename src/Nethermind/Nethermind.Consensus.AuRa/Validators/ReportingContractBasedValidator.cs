@@ -113,45 +113,6 @@ namespace Nethermind.Consensus.AuRa.Validators
 
         private void Report(ReportType reportType, Address validator, long blockNumber, byte[] proof, object cause, CreateReportTransactionDelegate createReportTransactionDelegate)
         {
-            try
-            {
-                if (_cache.AlreadyReported(reportType, validator, blockNumber))
-                {
-                    if (_logger.IsDebug) _logger.Debug($"Skipping report of {validator} at {blockNumber} with {cause} as its already reported.");
-                }
-                else
-                {
-                    if (!Validators.Contains(ValidatorContract.NodeAddress))
-                    {
-                        if (_logger.IsTrace) _logger.Trace($"Skipping reporting {reportType} misbehaviour (cause: {cause}) at block #{blockNumber} from {validator} as we are not validator");
-                    }
-                    else
-                    {
-                        if (_logger.IsTrace) _logger.Trace($"Reporting {reportType} misbehaviour (cause: {cause}) at block #{blockNumber} from {validator}");
-
-                        Transaction transaction = createReportTransactionDelegate(validator, blockNumber, proof);
-                        if (transaction != null)
-                        {
-                            ITxSender txSender = SetSender(blockNumber);
-                            SendTransaction(reportType, txSender, transaction);
-                            if (_logger.IsWarn) _logger.Warn($"Reported {reportType} validator {validator} misbehaviour (cause: {cause}) at block {blockNumber} with transaction {transaction.Hash}.");
-                            if (reportType == ReportType.Malicious)
-                            {
-                                Metrics.ReportedMaliciousMisbehaviour++;
-                            }
-                            else
-                            {
-                                Metrics.ReportedBenignMisbehaviour++;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                if (_logger.IsError) _logger.Error($"Validator {validator} could not be reported on block {blockNumber} with cause {cause}", e);
-            }
-
         }
 
         private static void SendTransaction(ReportType reportType, ITxSender txSender, Transaction transaction)
